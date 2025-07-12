@@ -1,7 +1,7 @@
-const express = require('express');
+const express = import('express');
 const router = express.Router();
-const db = require('../memory');
-const auth = require('../middleware/auth');
+const db = import('../memory');
+const auth = import('../middleware/auth');
 
 // POST /api/articles — create article
 router.post('/', auth, (req, res) => {

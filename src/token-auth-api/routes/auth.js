@@ -1,7 +1,7 @@
-const express = require('express');
-const { v4: uuid } = require('uuid');
+const express = import('express');
+const { v4: uuid } = import('uuid');
 const router = express.Router();
-const db = require('../memory');
+const db = import('../memory');
 
 // POST /api/authenticate
 router.post('/', (req, res) => {

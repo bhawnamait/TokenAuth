@@ -1,4 +1,4 @@
-const db = require('../memory');
+const db = import('../memory');
 
 function auth(req, res, next) {
   const token = req.headers['authentication-header'];

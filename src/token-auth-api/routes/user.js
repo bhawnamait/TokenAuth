@@ -1,6 +1,6 @@
-const express = require('express');
+const express = import('express');
 const router = express.Router();
-const db = require('../memory');
+const db = import('../memory');
 
 router.post('/', (req, res) => {
   const { user_id, login, password } = req.body || {};

@@ -1,9 +1,8 @@
-const express = require('express');
-const { v4: uuid } = require('uuid');
-const userRoutes = require('./routes/user');
-const authRoutes = require('./routes/auth');
-const articleRoutes = require('./routes/article');
-
+const { v4: uuid } = import('uuid');
+import userRoutes from './routes/user.js';
+import authRoutes from './routes/auth.js';
+import articleRoutes from './routes/article.js';
+import express from 'express';
 const app = express();
 app.use(express.json());
 
