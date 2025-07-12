@@ -1,6 +1,7 @@
-const express = import('express');
+import express from 'express';
+import db from '../memory.js';
+
 const router = express.Router();
-const db = import('../memory');
 
 router.post('/', (req, res) => {
   const { user_id, login, password } = req.body || {};
@@ -10,4 +11,4 @@ router.post('/', (req, res) => {
   res.sendStatus(201);
 });
 
-module.exports = router;
+export default router;

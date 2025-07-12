@@ -1,7 +1,8 @@
-const express = import('express');
-const { v4: uuid } = import('uuid');
+import express from 'express';
+import { v4 as uuid } from 'uuid';
+import db from '../memory.js';
+
 const router = express.Router();
-const db = import('../memory');
 
 // POST /api/authenticate
 router.post('/', (req, res) => {
@@ -26,4 +27,4 @@ router.post('/logout', (req, res) => {
   res.sendStatus(200);
 });
 
-module.exports = router;
+export default router;

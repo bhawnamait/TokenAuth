@@ -1,7 +1,8 @@
-const express = import('express');
+import express from 'express';
+import db from '../memory.js';
+import auth from '../middleware/auth.js';
+
 const router = express.Router();
-const db = import('../memory');
-const auth = import('../middleware/auth');
 
 // POST /api/articles — create article
 router.post('/', auth, (req, res) => {
@@ -41,4 +42,4 @@ router.get('/', (req, res) => {
   res.status(200).json(result);
 });
 
-module.exports = router;
+export default router;

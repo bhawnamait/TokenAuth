@@ -1,4 +1,4 @@
-const db = import('../memory');
+import db from '../memory.js';
 
 function auth(req, res, next) {
   const token = req.headers['authentication-header'];
@@ -9,4 +9,4 @@ function auth(req, res, next) {
   next();
 }
 
-module.exports = auth;
+export default auth;
