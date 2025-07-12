@@ -1,38 +1,44 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../memory');
+const auth = require('../middleware/auth');
 
-app.get('/api/articles', (req, res) => {
-  const token = authToken(req);
-  const loggedIn = token && memory.sessions.has(token);
-  const userLogin = loggedIn ? memory.sessions.get(token) : null;
-  const userId = userLogin ? memory.users[userLogin]?.user_id : null;
-
-  const result = Object.values(memory.posts).filter(article => {
-    if (article.visibility === 'public') return true;
-    if (loggedIn && article.visibility === 'logged_in') return true;
-    if (loggedIn && article.user_id === userId) return true;
-    return false;
-  });
-
-  return res.status(200).json(result);
-});
-
-
-app.post('/api/articles', (req, res) => {
-  const token = authToken(req);
-  if (!token || !memory.sessions.has(token)) return res.sendStatus(401);
-
+// POST /api/articles — create article
+router.post('/', auth, (req, res) => {
   const { article_id, title, content, visibility } = req.body || {};
-  if (!required(req.body, ['article_id', 'title', 'content', 'visibility'])) return res.sendStatus(400);
 
-  const login = memory.sessions.get(token);
-  const user = memory.users[login];
+  if (!article_id || !title || !content || !visibility) {
+    return res.sendStatus(400);
+  }
 
-  memory.posts[article_id] = {
+  // Save article
+  db.articles[article_id] = {
     article_id,
     title,
     content,
     visibility,
-    user_id: user.user_id
+    user_id: req.user.user_id
   };
 
-  return res.sendStatus(201);
+  res.sendStatus(201);
 });
+
+// GET /api/articles — view based on token
+router.get('/', (req, res) => {
+  const token = req.headers['authentication-header'];
+  const hasToken = token && db.tokens.has(token);
+  let login = null;
+  if (hasToken) login = db.tokens.get(token);
+  const user = login ? db.users[login] : null;
+
+  const result = Object.values(db.articles).filter(article => {
+    if (article.visibility === 'public') return true;
+    if (article.visibility === 'logged_in' && hasToken) return true;
+    if (article.visibility === 'private' && user && article.user_id === user.user_id) return true;
+    return false;
+  });
+
+  res.status(200).json(result);
+});
+
+module.exports = router;

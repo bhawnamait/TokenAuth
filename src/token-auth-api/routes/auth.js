@@ -1,20 +1,29 @@
-app.post('/api/authenticate', (req, res) => {
-  const { login, password } = req.body || {};
-  if (!required(req.body, ['login', 'password'])) return res.sendStatus(400);
+const express = require('express');
+const { v4: uuid } = require('uuid');
+const router = express.Router();
+const db = require('../memory');
 
-  const user = memory.users[login];
+// POST /api/authenticate
+router.post('/', (req, res) => {
+  const { login, password } = req.body || {};
+  if (!login || !password) return res.sendStatus(400);
+
+  const user = db.users[login];
   if (!user) return res.sendStatus(404);
   if (user.password !== password) return res.sendStatus(401);
 
   const token = uuid();
-  memory.sessions.set(token, login);
-  return res.status(200).json({ token });
+  db.tokens.set(token, login);
+  res.status(200).json({ token });
 });
 
-app.post('/api/logout', (req, res) => {
-  const token = authToken(req);
-  if (!token || !memory.sessions.has(token)) return res.sendStatus(401);
+// POST /api/logout
+router.post('/logout', (req, res) => {
+  const token = req.headers['authentication-header'];
+  if (!token || !db.tokens.has(token)) return res.sendStatus(401);
 
-  memory.sessions.delete(token);
-  return res.sendStatus(200);
+  db.tokens.delete(token);
+  res.sendStatus(200);
 });
+
+module.exports = router;

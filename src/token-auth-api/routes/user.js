@@ -1,6 +1,13 @@
-app.post('/api/user', (req, res) => {
+const express = require('express');
+const router = express.Router();
+const db = require('../memory');
+
+router.post('/', (req, res) => {
   const { user_id, login, password } = req.body || {};
-  if (!required(req.body, ['user_id', 'login', 'password'])) return res.sendStatus(400);
-  memory.users[login] = { user_id, password };
-  return res.sendStatus(201);
+  if (!user_id || !login || !password) return res.sendStatus(400);
+
+  db.users[login] = { user_id, login, password };
+  res.sendStatus(201);
 });
+
+module.exports = router;
